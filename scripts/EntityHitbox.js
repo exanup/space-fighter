@@ -3,6 +3,8 @@
 
 function EntityHitbox(props) {
   var self = this;
+  var Game = null;
+
   self.x = undefined;
   self.y = undefined;
   self.width = undefined;
@@ -11,6 +13,10 @@ function EntityHitbox(props) {
   self.parent = null;
 
   var __initObj = function () {
+    Game = props.Game || (function () {
+      throw Error("Need the Game object!");
+    }());
+
     if (typeof props.parent === 'undefined') {
       // console.error("Need to pass the parent to successfully create a hitbox!");
       throw Error("Need to pass the parent to successfully create a hitbox!");
@@ -32,12 +38,12 @@ function EntityHitbox(props) {
   };
 
   self.showOutline = function () {
-    ctx.save();
-    ctx.beginPath();
-    ctx.strokeStyle = "#F00";
-    ctx.strokeRect(self.x, self.y, self.width, self.height);
-    ctx.closePath();
-    ctx.restore();
+    Game.ctx.save();
+    Game.ctx.beginPath();
+    Game.ctx.strokeStyle = "#F00";
+    Game.ctx.strokeRect(self.x, self.y, self.width, self.height);
+    Game.ctx.closePath();
+    Game.ctx.restore();
   };
 
   __initObj();

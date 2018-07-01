@@ -5,6 +5,8 @@
 
 function Hero(props) {
   var self = this;
+  var Game = null;
+
   self.x = undefined;
   self.y = undefined;
   self.dx = undefined;
@@ -12,23 +14,29 @@ function Hero(props) {
   self.width = undefined;
   self.height = undefined;
   self.hitbox = null;
-  self.displacementUnit = Hero.width;
-  self.parent = null;
   self.projectiles = [];
   self.projectilesCount = 0;
   self.projectileLastFiredOn = undefined;
+  self.displacementUnit = Hero.width;
+  self.parent = null;
 
   var __initObj = function () {
+    Game = props.Game || (function () {
+      throw Error("Need the Game object!");
+    }());
+
+    self.parent = props.parent || null;
     self.width = props.width || Hero.width;
     self.height = props.height || Hero.height;
 
-    self.x = props.x || leftPadding + self.width;
-    self.y = props.y || canvas.height - bottomPadding - self.height;
+    self.x = props.x || self.parent.leftPadding + self.width;
+    self.y = props.y || Game.canvas.height - self.parent.bottomPadding - self.height;
     self.dx = 0; // no need for velocity for now
     self.dy = 0; // no need for velocity for now
 
     self.hitbox = new EntityHitbox({
       parent: self,
+      Game: Game,
     });
   };
 
@@ -36,7 +44,7 @@ function Hero(props) {
     self.drawProjectiles();
     // self.showOutline();
     if (Hero.loaded) {
-      ctx.drawImage(Hero.$sprite, self.x, self.y, self.width, self.height);
+      Game.ctx.drawImage(Hero.$sprite, self.x, self.y, self.width, self.height);
     }
     self.hitbox.showOutline();
   };
@@ -73,15 +81,15 @@ function Hero(props) {
   };
 
   self.handleInput = function () {
-    if (rightPressed && self.x < canvas.width - self.width - 50) {
+    if (Game.rightPressed && self.x < Game.canvas.width - self.width - 50) {
       // console.log("right pressed");
       self.moveRight();
     }
-    if (leftPressed && self.x > 50) {
+    if (Game.leftPressed && self.x > 50) {
       // console.log("left pressed");
       self.moveLeft();
     }
-    if (spaceBarPressed) {
+    if (Game.spaceBarPressed) {
       // console.log("space pressed");
       self.fireProjectile();
     }
@@ -90,13 +98,13 @@ function Hero(props) {
   self.moveRight = function () {
     self.x += self.displacementUnit;
     self.hitbox.update();
-    rightPressed = false; // otherwise, the ship will move too much
+    Game.rightPressed = false; // otherwise, the ship will move too much
   };
 
   self.moveLeft = function () {
     self.x -= self.displacementUnit;
     self.hitbox.update();
-    leftPressed = false; // otherwise, the ship will move too much
+    Game.leftPressed = false; // otherwise, the ship will move too much
   };
 
   self.fireProjectile = function () {
@@ -109,6 +117,7 @@ function Hero(props) {
 
       var props = {
         parent: self,
+        Game: Game,
         x: Math.round(self.x + (self.width - Projectile.width) / 2),
         y: self.y,
         dy: -5,

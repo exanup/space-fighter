@@ -3,6 +3,8 @@
 
 function Projectile(props) {
   var self = this;
+  var Game = null;
+
   self.x = undefined;
   self.y = undefined;
   self.dx = undefined;
@@ -13,6 +15,10 @@ function Projectile(props) {
   self.parent = null;
 
   var __initObj = function () {
+    Game = props.Game || (function () {
+      throw Error("Need the Game object!");
+    }());
+
     self.parent = (typeof props.parent !== 'undefined') ? props.parent : null;
 
     self.x = props.x || 10000;
@@ -25,25 +31,26 @@ function Projectile(props) {
     self.height = props.height || Projectile.height;
 
     self.hitbox = new EntityHitbox({
-      parent: self
+      parent: self,
+      Game: Game,
     });
   };
 
   self.draw = function () {
     // self.showOutline();
     if (Projectile.loaded) {
-      ctx.drawImage(Projectile.$sprite, self.x, self.y, self.width, self.height);
+      Game.ctx.drawImage(Projectile.$sprite, self.x, self.y, self.width, self.height);
     }
     self.hitbox.showOutline();
   };
 
   self.showOutline = function () {
-    ctx.save();
-    ctx.beginPath();
-    ctx.strokeStyle = "#0F0";
-    ctx.strokeRect(self.x, self.y, self.width, self.height);
-    ctx.closePath();
-    ctx.restore();
+    Game.ctx.save();
+    Game.ctx.beginPath();
+    Game.ctx.strokeStyle = "#0F0";
+    Game.ctx.strokeRect(self.x, self.y, self.width, self.height);
+    Game.ctx.closePath();
+    Game.ctx.restore();
   };
 
   self.move = function () {

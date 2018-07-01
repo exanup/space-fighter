@@ -14,10 +14,10 @@ body {
 
 .canvas-wrapper {
   display: inline-block;
-  /* border: 1px solid lightsalmon; */
+  /* border: 1px solid lightseagreen; */
 }
 
 .space-fighter {
-  /* background-color: white; */
-  border: 1px solid lightseagreen;
+  background-color: white;
+  /* border: 1px solid lightsalmon; */
 }

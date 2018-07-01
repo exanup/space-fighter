@@ -1,0 +1,23 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: lightgoldenrodyellow;
+}
+
+.container {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.canvas-wrapper {
+  display: inline-block;
+  /* border: 1px solid lightsalmon; */
+}
+
+.space-fighter {
+  /* background-color: white; */
+  border: 1px solid lightseagreen;
+}

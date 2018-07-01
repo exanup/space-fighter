@@ -49,7 +49,7 @@ function Projectile(props) {
   self.draw = function () {
     // self.showOutline();
     ctx.drawImage(self.$sprite, self.x, self.y, self.width, self.height);
-    // self.hitbox.showOutline();
+    self.hitbox.showOutline();
   };
 
   self.showOutline = function () {

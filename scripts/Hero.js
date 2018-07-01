@@ -14,7 +14,7 @@ function Hero(props) {
   self.hitbox = null;
   self.$sprite = null;
   self.loaded = undefined;
-  self.displacementUnit = 6;
+  self.displacementUnit = Hero.width;
   self.parent = null;
   self.projectiles = [];
   self.projectilesCount = 0;
@@ -54,7 +54,7 @@ function Hero(props) {
     self.drawProjectiles();
     ctx.drawImage(self.$sprite, self.x, self.y, self.width, self.height);
     // self.showOutline();
-    // self.hitbox.showOutline();
+    self.hitbox.showOutline();
   };
 
   self.drawProjectiles = function () {
@@ -89,17 +89,16 @@ function Hero(props) {
   }
 
   self.handleInput = function () {
-    var didMove = false;
     if (rightPressed && self.x < canvas.width - self.width - 50) {
-      // console.log('right pressed');
+      // console.log("right pressed");
       self.moveRight();
     }
     if (leftPressed && self.x > 50) {
-      // console.log('left pressed');
+      // console.log("left pressed");
       self.moveLeft();
     }
     if (spaceBarPressed) {
-      // console.log("fire!!!!");
+      // console.log("space pressed");
       self.fireProjectile();
     }
   };
@@ -107,11 +106,13 @@ function Hero(props) {
   self.moveRight = function () {
     self.x += self.displacementUnit;
     self.hitbox.update();
+    rightPressed = false; // otherwise, the ship will move too much
   };
 
   self.moveLeft = function () {
     self.x -= self.displacementUnit;
     self.hitbox.update();
+    leftPressed = false; // otherwise, the ship will move too much
   };
 
   self.fireProjectile = function () {
@@ -121,6 +122,7 @@ function Hero(props) {
     if ((typeof self.projectileLastFiredOn === 'undefined') ||
       (now - self.projectileLastFiredOn > Hero.projectilesDelay)) {
       // console.log('firing!');
+
 
       var props = {
         parent: self,
@@ -136,18 +138,6 @@ function Hero(props) {
 
       self.projectileLastFiredOn = Date.now();
     }
-  };
-
-  self.garbageCollectOutOfBoundProjectiles = function () {
-    var indexesOfGarbageProjectiles = self.projectiles.map(function (projectile, index) {
-      if (projectile.y < 100) {
-        return index;
-      }
-    });
-
-    indexesOfGarbageProjectiles.forEach(function (index) {
-      self.projectiles.splice(index, 1);
-    });
   };
 
   __initObj();

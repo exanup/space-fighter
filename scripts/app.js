@@ -47,6 +47,8 @@ function keyDownHandler(e) {
   if (e.keyCode === 32) {
     spaceBarPressed = true;
   }
+
+  // hero.handleInput();
 }
 
 function keyUpHandler(e) {
@@ -59,4 +61,6 @@ function keyUpHandler(e) {
   if (e.keyCode === 32) {
     spaceBarPressed = false;
   }
+
+  // hero.handleInput();
 }

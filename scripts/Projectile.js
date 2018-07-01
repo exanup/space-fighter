@@ -10,13 +10,10 @@ function Projectile(props) {
   self.width = null;
   self.height = null;
   self.hitbox = null;
-  self.$sprite = null;
-  self.loaded = undefined;
   self.parent = null;
 
   var __initObj = function () {
     self.parent = (typeof props.parent !== 'undefined') ? props.parent : null;
-    self.loaded = false;
 
     self.x = props.x || 10000;
     self.y = props.y || 10000;
@@ -30,25 +27,11 @@ function Projectile(props) {
     self.hitbox = new EntityHitbox({
       parent: self
     });
-
-    self.loadSprite();
-  };
-
-  self.loadSprite = function () {
-    self.$sprite = new Image();
-    self.$sprite.addEventListener('load', self.spriteLoaded, false);
-    self.$sprite.src = "images/missile.gif";
-  };
-
-  self.spriteLoaded = function (e) {
-    // console.log('missile sprite loaded');
-    self.loaded = true;
-    self.draw();
   };
 
   self.draw = function () {
     // self.showOutline();
-    ctx.drawImage(self.$sprite, self.x, self.y, self.width, self.height);
+    ctx.drawImage(Projectile.$sprite, self.x, self.y, self.width, self.height);
     self.hitbox.showOutline();
   };
 
@@ -72,3 +55,18 @@ function Projectile(props) {
 
 Projectile.width = 11;
 Projectile.height = 24;
+Projectile.$sprite = null;
+Projectile.loaded = false;
+
+Projectile.loadSprite = function () {
+  Projectile.$sprite = new Image();
+  Projectile.$sprite.addEventListener('load', Projectile.spriteLoaded, false);
+  Projectile.$sprite.src = "images/missile.gif";
+};
+
+Projectile.spriteLoaded = function (e) {
+  // console.log("hero sprite loaded");
+  Projectile.loaded = true;
+};
+
+Projectile.loadSprite();

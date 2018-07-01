@@ -12,8 +12,6 @@ function Hero(props) {
   self.width = undefined;
   self.height = undefined;
   self.hitbox = null;
-  self.$sprite = null;
-  self.loaded = undefined;
   self.displacementUnit = Hero.width;
   self.parent = null;
   self.projectiles = [];
@@ -21,8 +19,6 @@ function Hero(props) {
   self.projectileLastFiredOn = undefined;
 
   var __initObj = function () {
-    self.loaded = false;
-
     self.width = props.width || Hero.width;
     self.height = props.height || Hero.height;
 
@@ -34,25 +30,11 @@ function Hero(props) {
     self.hitbox = new EntityHitbox({
       parent: self,
     });
-
-    self.loadSprite();
-  };
-
-  self.loadSprite = function () {
-    self.$sprite = new Image();
-    self.$sprite.addEventListener('load', self.spriteLoaded, false);
-    self.$sprite.src = "images/hero.png";
-  };
-
-  self.spriteLoaded = function (e) {
-    // console.log("hero sprite loaded");
-    self.loaded = true;
-    self.draw();
   };
 
   self.draw = function () {
     self.drawProjectiles();
-    ctx.drawImage(self.$sprite, self.x, self.y, self.width, self.height);
+    ctx.drawImage(Hero.$sprite, self.x, self.y, self.width, self.height);
     // self.showOutline();
     self.hitbox.showOutline();
   };
@@ -86,7 +68,7 @@ function Hero(props) {
         self.projectiles[i].move();
       }
     }
-  }
+  };
 
   self.handleInput = function () {
     if (rightPressed && self.x < canvas.width - self.width - 50) {
@@ -123,7 +105,6 @@ function Hero(props) {
       (now - self.projectileLastFiredOn > Hero.projectilesDelay)) {
       // console.log('firing!');
 
-
       var props = {
         parent: self,
         x: Math.round(self.x + (self.width - Projectile.width) / 2),
@@ -146,3 +127,18 @@ function Hero(props) {
 Hero.width = 100;
 Hero.height = 100;
 Hero.projectilesDelay = 200;
+Hero.$sprite = null;
+Hero.loaded = false;
+
+Hero.loadSprite = function () {
+  Hero.$sprite = new Image();
+  Hero.$sprite.addEventListener('load', Hero.spriteLoaded, false);
+  Hero.$sprite.src = "images/hero.png";
+};
+
+Hero.spriteLoaded = function (e) {
+  // console.log("hero sprite loaded");
+  Hero.loaded = true;
+};
+
+Hero.loadSprite();

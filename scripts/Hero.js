@@ -34,8 +34,10 @@ function Hero(props) {
 
   self.draw = function () {
     self.drawProjectiles();
-    ctx.drawImage(Hero.$sprite, self.x, self.y, self.width, self.height);
     // self.showOutline();
+    if (Hero.loaded) {
+      ctx.drawImage(Hero.$sprite, self.x, self.y, self.width, self.height);
+    }
     self.hitbox.showOutline();
   };
 

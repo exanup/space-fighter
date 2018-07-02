@@ -7,12 +7,12 @@ function Projectile(props) {
 
   self.x = undefined;
   self.y = undefined;
-  self.dx = undefined;
-  self.dy = undefined;
   self.width = null;
   self.height = null;
   self.hitbox = null;
   self.parent = null;
+
+  self.damage = 334;
 
   var __initObj = function () {
     Game = props.Game || (function () {
@@ -25,7 +25,6 @@ function Projectile(props) {
     self.y = props.y || 10000;
 
     self.dx = 0; // projectiles are not supposed to move sideways
-    self.dy = props.dy || -1;
 
     self.width = props.width || Projectile.width;
     self.height = props.height || Projectile.height;
@@ -41,7 +40,7 @@ function Projectile(props) {
     if (Projectile.loaded) {
       Game.ctx.drawImage(Projectile.$sprite, self.x, self.y, self.width, self.height);
     }
-    self.hitbox.showOutline();
+    // self.hitbox.showOutline();
   };
 
   self.showOutline = function () {
@@ -54,9 +53,33 @@ function Projectile(props) {
   };
 
   self.move = function () {
-    self.x += self.dx;
-    self.y += self.dy;
+    self.y += Projectile.dy;
     self.hitbox.update();
+  };
+
+  self.checkCollisionWithEnemy = function (enemy) {
+    var x1min = self.hitbox.x;
+    var x1max = self.hitbox.x + self.hitbox.width;
+    var y1min = self.hitbox.y;
+    var y1max = self.hitbox.y + self.hitbox.height;
+
+    var x2min = enemy.hitbox.x;
+    var x2max = enemy.hitbox.x + enemy.hitbox.width;
+    var y2min = enemy.hitbox.y;
+    var y2max = enemy.hitbox.y + enemy.hitbox.height;
+
+    var collided = true;
+
+    if (x1max < x2min || x1min > x2max) {
+      collided = false;
+    }
+    // if (y1max < y2min || y1min > y2max) {
+    if (y1min > y2max) {
+      // no need to check beyond as the bullet hits it only form bottom
+      collided = false;
+    }
+
+    return collided;
   };
 
   __initObj();
@@ -64,6 +87,7 @@ function Projectile(props) {
 
 Projectile.width = 11;
 Projectile.height = 24;
+Projectile.dy = -10;
 Projectile.$sprite = null;
 Projectile.loaded = false;
 

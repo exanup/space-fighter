@@ -26,11 +26,14 @@ function Hero(props) {
     }());
 
     self.parent = props.parent || null;
+
     self.width = props.width || Hero.width;
     self.height = props.height || Hero.height;
 
-    self.x = props.x || self.parent.leftPadding + self.width;
-    self.y = props.y || Game.canvas.height - self.parent.bottomPadding - self.height;
+    self.x = props.x ||
+      Game.leftPadding + (Game.canvas.width - Game.leftPadding - Game.rightPadding) / 3;
+    self.y = props.y ||
+      Game.canvas.height - Game.bottomPadding - self.height;
     self.dx = 0; // no need for velocity for now
     self.dy = 0; // no need for velocity for now
 
@@ -46,7 +49,7 @@ function Hero(props) {
     if (Hero.loaded) {
       Game.ctx.drawImage(Hero.$sprite, self.x, self.y, self.width, self.height);
     }
-    self.hitbox.showOutline();
+    // self.hitbox.showOutline();
   };
 
   self.drawProjectiles = function () {
@@ -70,14 +73,36 @@ function Hero(props) {
     // will change the indexes of the array itself.
     // Reverse iteration is unaffected by that behaviour.
     for (var i = self.projectilesCount - 1; i >= 0; i--) {
-      if (self.projectiles[i].y < -100) {
-        // if more than 100 pixels above the canvas
-        self.projectiles.splice(i, 1);
-        self.projectilesCount--;
-      } else {
-        self.projectiles[i].move();
+      // check if projectiles collide with enemies
+      var collided = false;
+
+      var enemies = self.parent.enemies;
+      // checking collision with each enemy
+      for (var j = enemies.length - 1; j >= 0; j--) {
+        if (self.projectiles[i].checkCollisionWithEnemy(enemies[j])) {
+          collided = true;
+          enemies[j].hitPoints -= self.projectiles[i].damage;
+
+          self.projectiles.splice(i, 1);
+          self.projectilesCount--;
+
+          self.parent.gameLevel += 10;
+          break;
+        }
+      }
+
+      if (!collided) {
+        // check if projectiles are out of bound
+        if (self.projectiles[i].hitbox.y + self.projectiles[i].hitbox.height <= 0) {
+          // if more than 100 pixels above the canvas
+          self.projectiles.splice(i, 1);
+          self.projectilesCount--;
+        } else {
+          self.projectiles[i].move();
+        }
       }
     }
+
   };
 
   self.handleInput = function () {
@@ -120,7 +145,6 @@ function Hero(props) {
         Game: Game,
         x: Math.round(self.x + (self.width - Projectile.width) / 2),
         y: self.y,
-        dy: -5,
       };
 
       var projectile = new Projectile(props);

@@ -71,6 +71,7 @@ function Game(props) {
   self.drawScore = function () {
     // console.log("drawing score");
     Game.ctx.save();
+
     Game.ctx.fillStyle = "#222";
     Game.ctx.fillRect(10, 10, 100, 40);
     Game.ctx.textBaseline = "center";
@@ -79,7 +80,7 @@ function Game(props) {
     Game.ctx.fillStyle = "#FF0";
     Game.ctx.fillText("Score: " + self.getScore(), 10+50, 35);
 
-    // debug msg
+    // start of debug msg
     // Game.ctx.font = "12px sans-serif";
     // Game.ctx.fillStyle = "#FF0";
     // Game.ctx.fillText("Level: " + self.gameLevel, Game.topPadding, Game.topPadding);
@@ -87,6 +88,8 @@ function Game(props) {
     // Game.ctx.fillText("LevelLastChangedValue: " + self.gameLevelLastChangedValue, Game.topPadding, Game.topPadding + 24);
     // Game.ctx.fillText("LevelSeparator: " + self.gameLevelSeparator, Game.topPadding, Game.topPadding + 36);
     // Game.ctx.fillText("dy: " + Enemy.dy, Game.topPadding, Game.topPadding + 48);
+    // end of debug messages
+
     Game.ctx.restore();
   };
 

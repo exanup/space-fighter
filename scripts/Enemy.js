@@ -36,7 +36,7 @@ function Enemy(props) {
 
   self.draw = function () {
     // self.showOutline();
-    if (Enemy.loaded) {
+    if (Enemy.hasSpriteLoaded) {
       Game.ctx.drawImage(Enemy.$sprite, self.x, self.y, self.width, self.height);
     }
     // self.hitbox.showOutline();
@@ -94,7 +94,7 @@ Enemy.loadSprite = function () {
 
 Enemy.spriteLoaded = function (e) {
   // console.log("hero sprite loaded");
-  Enemy.loaded = true;
+  Enemy.hasSpriteLoaded = true;
 };
 
 Enemy.loadSprite();

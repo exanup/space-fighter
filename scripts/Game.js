@@ -10,6 +10,7 @@ function Game(props) {
   self.raf = null;
 
   self.hero = null;
+  self.startScreen = null;
   self.enemies = [];
   self.enemiesCount = 0;
 
@@ -17,11 +18,16 @@ function Game(props) {
   self.gameLevelChangeRate = 1;
   self.gameLevelLastChangedValue = -200;
   self.gameLevelSeparator = 1000;
-
-  self.gameOver = false;
+  self.currentState = Game.states.START_SCREEN;
 
   var __initObj = function () {
+
     self.hero = new Hero({
+      parent: self,
+      Game: Game,
+    });
+
+    self.startScreen = new StartScreen({
       parent: self,
       Game: Game,
     });
@@ -57,15 +63,65 @@ function Game(props) {
   };
 
   self.clearScreen = function () {
-    Game.ctx.clearRect(0, 0, Game.canvas.width, Game.canvas.height);
+    switch (self.currentState) {
+      case Game.states.START_SCREEN:
+        break;
+
+      case Game.states.GAME_SCREEN:
+        Game.ctx.clearRect(0, 0, Game.canvas.width, Game.canvas.height);
+        break;
+
+      case Game.states.PAUSE_SCREEN:
+        break;
+
+      case Game.states.END_SCREEN:
+        break;
+    }
   };
 
   self.render = function () {
-    self.hero.draw();
-    self.enemies.forEach(function (enemy) {
-      enemy.draw();
-    });
-    self.drawScore();
+    switch (self.currentState) {
+      case Game.states.START_SCREEN:
+        self.startScreen.draw();
+        break;
+
+      case Game.states.GAME_SCREEN:
+        self.hero.draw();
+        self.enemies.forEach(function (enemy) {
+          enemy.draw();
+        });
+        self.drawScore();
+        break;
+
+      case Game.states.PAUSE_SCREEN:
+        break;
+
+      case Game.states.END_SCREEN:
+        break;
+    }
+  };
+
+
+  self.update = function () {
+    switch (self.currentState) {
+      case Game.states.START_SCREEN:
+        self.startScreen.update();
+        break;
+
+      case Game.states.GAME_SCREEN:
+        self.updateGameLevel();
+        self.hero.update();
+        self.updateEnemies();
+        self.checkAndSpawnRandomEnemy();
+        break;
+
+      case Game.states.PAUSE_SCREEN:
+        break;
+
+      case Game.states.END_SCREEN:
+        self.showGameOverState();
+        break;
+    }
   };
 
   self.drawScore = function () {
@@ -73,15 +129,18 @@ function Game(props) {
     Game.ctx.save();
 
     Game.ctx.fillStyle = "#222";
-    Game.ctx.fillRect(10, 10, 100, 40);
+    Game.ctx.fillRect(10, 10, 150, 40);
     Game.ctx.textBaseline = "center";
     Game.ctx.textAlign = "center";
     Game.ctx.font = "16px sans-serif";
     Game.ctx.fillStyle = "#FF0";
-    Game.ctx.fillText("Score: " + self.getScore(), 10+50, 35);
+    Game.ctx.fillText("Score: " + self.getScore(), 10 + 150/2, 35);
 
-    // start of debug msg
+    // start of debug msg, comment above block of score so that
+    // this msg is clear
     // Game.ctx.font = "12px sans-serif";
+    // Game.ctx.textBaseline = "top";
+    // Game.ctx.textAlign = "left";
     // Game.ctx.fillStyle = "#FF0";
     // Game.ctx.fillText("Level: " + self.gameLevel, Game.topPadding, Game.topPadding);
     // Game.ctx.fillText("LevelChangeRate: " + self.gameLevelChangeRate, Game.topPadding, Game.topPadding + 12);
@@ -91,17 +150,6 @@ function Game(props) {
     // end of debug messages
 
     Game.ctx.restore();
-  };
-
-  self.update = function () {
-    if (!self.gameOver) {
-      self.updateGameLevel();
-      self.hero.update();
-      self.updateEnemies();
-      self.checkAndSpawnRandomEnemy();
-    } else {
-      self.showGameOverState();
-    }
   };
 
   self.updateGameLevel = function () {
@@ -127,15 +175,15 @@ function Game(props) {
         // self.enemies.splice(i, 1);
         // self.enemiesCount--;
         // should be game over
-        self.setGameOver();
+        self.setStateGameOver();
       } else {
         self.enemies[i].update();
       }
     }
   };
 
-  self.setGameOver = function () {
-    self.gameOver = true;
+  self.setStateGameOver = function () {
+    self.currentState = Game.states.END_SCREEN;
   };
 
   self.checkAndSpawnRandomEnemy = function () {
@@ -163,8 +211,9 @@ function Game(props) {
   };
 
   self.initInputHandlers = function () {
-    document.addEventListener('keydown', self.keyDownHandler, false);
-    document.addEventListener('keyup', self.keyUpHandler, false);
+    document.addEventListener("keydown", self.keyDownHandler, false);
+    document.addEventListener("keyup", self.keyUpHandler, false);
+    document.addEventListener("click", self.clickHandler, false);
   };
 
   self.keyDownHandler = function (e) {
@@ -195,17 +244,24 @@ function Game(props) {
     }
   };
 
-  self.showGameOverState = function() {
+  self.clickHandler = function (e) {
+    if (self.startScreen.startBtn.checkClicked(e)) {
+      // console.log("start game pressed");
+      self.currentState = Game.states.GAME_SCREEN;
+    }
+  };
+
+  self.showGameOverState = function () {
     // show that game is over
     var gameOverTextX = Game.canvas.width / 2;
     var gameOverTextY = Game.canvas.height / 2;
 
     Game.ctx.save();
 
-    Game.ctx.globalAlpha = 0.7;
+    // Game.ctx.globalAlpha = 0.5;
     Game.ctx.fillStyle = "#000";
     Game.ctx.fillRect(0, 0, Game.canvas.width, Game.canvas.height);
-    Game.ctx.globalAlpha = 1;
+    // Game.ctx.globalAlpha = 1;
 
     Game.ctx.fillStyle = "#FFF";
     Game.ctx.textBaseline = "center";
@@ -221,7 +277,7 @@ function Game(props) {
     Game.ctx.restore();
   };
 
-  self.getScore = function() {
+  self.getScore = function () {
     return Math.floor(self.gameLevel);
   };
 
@@ -241,3 +297,10 @@ Game.leftPadding = 50;
 Game.rightPadding = 50;
 Game.topPadding = 10;
 Game.bottomPadding = 10;
+
+Game.states = {
+  START_SCREEN: 0,
+  GAME_SCREEN: 1,
+  PAUSE_SCREEN: 2,
+  END_SCREEN: 3,
+};

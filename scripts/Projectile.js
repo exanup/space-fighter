@@ -12,7 +12,7 @@ function Projectile(props) {
   self.hitbox = null;
   self.parent = null;
 
-  self.damage = 334;
+  self.damage = 200;
 
   var __initObj = function () {
     Game = props.Game || (function () {
@@ -37,7 +37,7 @@ function Projectile(props) {
 
   self.draw = function () {
     // self.showOutline();
-    if (Projectile.loaded) {
+    if (Projectile.hasSpriteLoaded) {
       Game.ctx.drawImage(Projectile.$sprite, self.x, self.y, self.width, self.height);
     }
     // self.hitbox.showOutline();
@@ -94,12 +94,12 @@ Projectile.loaded = false;
 Projectile.loadSprite = function () {
   Projectile.$sprite = new Image();
   Projectile.$sprite.addEventListener('load', Projectile.spriteLoaded, false);
-  Projectile.$sprite.src = "images/missile.gif";
+  Projectile.$sprite.src = "images/missile.png";
 };
 
 Projectile.spriteLoaded = function (e) {
   // console.log("hero sprite loaded");
-  Projectile.loaded = true;
+  Projectile.hasSpriteLoaded = true;
 };
 
 Projectile.loadSprite();

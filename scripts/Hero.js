@@ -46,7 +46,7 @@ function Hero(props) {
   self.draw = function () {
     self.drawProjectiles();
     // self.showOutline();
-    if (Hero.loaded) {
+    if (Hero.hasSpriteLoaded) {
       Game.ctx.drawImage(Hero.$sprite, self.x, self.y, self.width, self.height);
     }
     // self.hitbox.showOutline();
@@ -173,7 +173,7 @@ Hero.loadSprite = function () {
 
 Hero.spriteLoaded = function (e) {
   // console.log("hero sprite loaded");
-  Hero.loaded = true;
+  Hero.hasSpriteLoaded = true;
 };
 
 Hero.loadSprite();

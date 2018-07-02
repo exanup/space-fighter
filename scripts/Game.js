@@ -32,6 +32,11 @@ function Game(props) {
       Game: Game,
     });
 
+    self.endScreen = new EndScreen({
+      parent: self,
+      Game: Game,
+    });
+
     self.initInputHandlers();
   };
 
@@ -97,6 +102,7 @@ function Game(props) {
         break;
 
       case Game.states.END_SCREEN:
+        self.endScreen.drawOnce();
         break;
     }
   };
@@ -119,7 +125,6 @@ function Game(props) {
         break;
 
       case Game.states.END_SCREEN:
-        self.showGameOverState();
         break;
     }
   };
@@ -134,7 +139,7 @@ function Game(props) {
     Game.ctx.textAlign = "center";
     Game.ctx.font = "16px sans-serif";
     Game.ctx.fillStyle = "#FF0";
-    Game.ctx.fillText("Score: " + self.getScore(), 10 + 150/2, 35);
+    Game.ctx.fillText("Score: " + self.getScore(), 10 + 150 / 2, 35);
 
     // start of debug msg, comment above block of score so that
     // this msg is clear
@@ -213,7 +218,8 @@ function Game(props) {
   self.initInputHandlers = function () {
     document.addEventListener("keydown", self.keyDownHandler, false);
     document.addEventListener("keyup", self.keyUpHandler, false);
-    document.addEventListener("click", self.clickHandler, false);
+    Game.canvas.addEventListener("click", self.clickHandler, false);
+    Game.canvas.addEventListener("mousemove", self.mouseMoveHandler, false);
   };
 
   self.keyDownHandler = function (e) {
@@ -245,36 +251,28 @@ function Game(props) {
   };
 
   self.clickHandler = function (e) {
-    if (self.startScreen.startBtn.checkClicked(e)) {
+    if (self.currentState === Game.states.START_SCREEN &&
+      self.startScreen.startBtn.checkHover(e)) {
       // console.log("start game pressed");
       self.currentState = Game.states.GAME_SCREEN;
+    } else if (self.currentState === Game.states.END_SCREEN &&
+      self.endScreen.homeBtn.checkHover(e)) {
+      self.currentState = Game.states.START_SCREEN;
+      // reset game entities too
+      // need to do that
     }
   };
 
-  self.showGameOverState = function () {
-    // show that game is over
-    var gameOverTextX = Game.canvas.width / 2;
-    var gameOverTextY = Game.canvas.height / 2;
-
-    Game.ctx.save();
-
-    // Game.ctx.globalAlpha = 0.5;
-    Game.ctx.fillStyle = "#000";
-    Game.ctx.fillRect(0, 0, Game.canvas.width, Game.canvas.height);
-    // Game.ctx.globalAlpha = 1;
-
-    Game.ctx.fillStyle = "#FFF";
-    Game.ctx.textBaseline = "center";
-
-    Game.ctx.font = "32px Bold Arial";
-    Game.ctx.textAlign = "center";
-    Game.ctx.fillText("Game Over", gameOverTextX, gameOverTextY - 20);
-
-    Game.ctx.font = "22px Bold Arial";
-    Game.ctx.textAlign = "Center";
-    Game.ctx.fillText("Score: " + self.getScore(), gameOverTextX, gameOverTextY + 20);
-
-    Game.ctx.restore();
+  self.mouseMoveHandler = function (e) {
+    // console.log('mousemove', e);
+    if ((self.currentState === Game.states.START_SCREEN &&
+        self.startScreen.startBtn.checkHover(e)) ||
+      (self.currentState === Game.states.END_SCREEN &&
+        self.endScreen.homeBtn.checkHover(e))) {
+      Game.canvas.style.cursor = "pointer";
+    } else {
+      Game.canvas.style.cursor = "default";
+    }
   };
 
   self.getScore = function () {

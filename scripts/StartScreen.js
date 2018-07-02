@@ -6,7 +6,7 @@
 function StartScreen(props) {
   var self = this;
   var Game = props.Game;
-  var parent = props.parent;
+  self.parent = props.parent;
 
   self.text = {
     x: Game.canvas.width / 2,
@@ -25,23 +25,27 @@ function StartScreen(props) {
     getY: function () {
       return (self.text.y + 150);
     },
-    checkClicked: function (e) {
+    checkHover: function (e) {
       var x1min = self.startBtn.getX();
       var x1max = self.startBtn.getX() + self.startBtn.width;
       var y1min = self.startBtn.getY();
       var y1max = self.startBtn.getY() + self.startBtn.height;
 
-      var clickedX = e.clientX - Game.canvas.offsetLeft;
-      var clickedY = e.clientY - Game.canvas.offsetTop;
+      var mouseX = e.clientX - Game.canvas.offsetLeft;
+      var mouseY = e.clientY - Game.canvas.offsetTop;
 
       var clicked = true;
-      if (clickedX < x1min || clickedX > x1max || clickedY < y1min || clickedY > y1max) {
+      if (mouseX < x1min || mouseX > x1max || mouseY < y1min || mouseY > y1max) {
         clicked = false;
       }
 
       return clicked;
     },
   };
+
+
+  // need to draw a box around the images who act like buttons
+
 
   self.draw = function () {
     // show the option to start game

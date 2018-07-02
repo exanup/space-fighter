@@ -85,8 +85,8 @@ function Projectile(props) {
   __initObj();
 }
 
-Projectile.width = 11;
-Projectile.height = 24;
+Projectile.width = 6;
+Projectile.height = 40;
 Projectile.dy = -10;
 Projectile.$sprite = null;
 Projectile.loaded = false;

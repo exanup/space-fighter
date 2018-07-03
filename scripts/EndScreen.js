@@ -15,8 +15,8 @@ function EndScreen(props) {
   };
 
   self.homeBtn = {
-    height: 30,
-    width: 150,
+    height: 15,
+    width: 80,
     getX: function () {
       return ((Game.canvas.width - self.homeBtn.width) / 2);
     },

@@ -52,7 +52,7 @@ function Game(props) {
 
   self.start = function () {
     if (!self.running) {
-      console.log("Starting/Resuming...")
+      console.log("Starting/Resuming...");
       self.running = true;
       self.gameLoop();
     }

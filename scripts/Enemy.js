@@ -74,7 +74,7 @@ function Enemy(props) {
     }
 
     return collided;
-  }
+  };
 
   __initObj();
 }
@@ -82,9 +82,9 @@ function Enemy(props) {
 Enemy.width = 100;
 Enemy.height = 100;
 Enemy.$sprite = null;
-Enemy.loaded = false;
+Enemy.hasSpriteLoaded = false;
 
-Enemy.dy = 2;
+Enemy.dy = 1;
 
 Enemy.loadSprite = function () {
   Enemy.$sprite = new Image();

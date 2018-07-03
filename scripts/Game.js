@@ -5,39 +5,49 @@
 
 function Game(props) {
   var self = this;
-
-  self.running = false;
   self.raf = null;
 
-  self.hero = null;
-  self.startScreen = null;
-  self.enemies = [];
-  self.enemiesCount = 0;
-
-  self.gameLevel = 0;
-  self.gameLevelChangeRate = 1;
-  self.gameLevelLastChangedValue = -200;
   self.gameLevelSeparator = 1000;
-  self.currentState = Game.states.START_SCREEN;
 
   var __initObj = function () {
+    self.resetGame();
+    self.initInputHandlers();
+  };
 
+  self.resetGame = function () {
+    self.resetGameState();
+    self.resetGameLevel();
+    self.createGameObjects();
+  };
+
+  self.resetGameState = function () {
+    self.running = false;
+    self.hero = null;
+    self.startScreen = null;
+    self.enemies = [];
+    self.enemiesCount = 0;
+    self.currentState = Game.states.START_SCREEN;
+  };
+
+  self.resetGameLevel = function () {
+    self.gameLevel = 0;
+    self.gameLevelChangeRate = 1;
+    self.gameLevelLastChangedValue = -200;
+  };
+
+  self.createGameObjects = function () {
     self.hero = new Hero({
       parent: self,
       Game: Game,
     });
-
     self.startScreen = new StartScreen({
       parent: self,
       Game: Game,
     });
-
     self.endScreen = new EndScreen({
       parent: self,
       Game: Game,
     });
-
-    self.initInputHandlers();
   };
 
   self.start = function () {
@@ -141,8 +151,8 @@ function Game(props) {
     Game.ctx.fillStyle = "#FF0";
     Game.ctx.fillText("Score: " + self.getScore(), 10 + 150 / 2, 35);
 
-    // start of debug msg, comment above block of score so that
-    // this msg is clear
+    // start of debug msg, comment above block of score
+    // so that this msg is clear
     // Game.ctx.font = "12px sans-serif";
     // Game.ctx.textBaseline = "top";
     // Game.ctx.textAlign = "left";
@@ -162,8 +172,8 @@ function Game(props) {
     self.gameLevel += self.gameLevelChangeRate;
     self.gameLevelChangeRate += 1 / self.gameLevelSeparator;
     var dy = self.gameLevel / self.gameLevelSeparator;
-    Enemy.dy = Math.ceil(dy);
-    // Enemy.dy =  dy > 1 ? dy : 1 ;
+    // Enemy.dy = Math.ceil(dy);
+    Enemy.dy =  dy > 1 ? dy : 1 ;
     // console.log(Enemy.dy);
   };
 
@@ -177,18 +187,12 @@ function Game(props) {
         self.enemiesCount--;
       } else if (self.enemies[i].checkCollisionWithHero(self.hero)) {
         // Collided with hero
-        // self.enemies.splice(i, 1);
-        // self.enemiesCount--;
         // should be game over
-        self.setStateGameOver();
+        self.showGameOver();
       } else {
         self.enemies[i].update();
       }
     }
-  };
-
-  self.setStateGameOver = function () {
-    self.currentState = Game.states.END_SCREEN;
   };
 
   self.checkAndSpawnRandomEnemy = function () {
@@ -207,8 +211,20 @@ function Game(props) {
       // console.log(enemy);
       self.enemies.push(enemy);
       self.enemiesCount++;
+      // console.group('Enemy');
+      // console.log(enemy);
+      // console.log(Enemy);
+      // console.groupEnd();
     }
     // console.groupEnd();
+  };
+
+  self.showGameOver = function () {
+    self.currentState = Game.states.END_SCREEN;
+  };
+
+  self.getScore = function () {
+    return Math.floor(self.gameLevel);
   };
 
   self.handleInput = function () {
@@ -257,9 +273,9 @@ function Game(props) {
       self.currentState = Game.states.GAME_SCREEN;
     } else if (self.currentState === Game.states.END_SCREEN &&
       self.endScreen.homeBtn.checkHover(e)) {
-      self.currentState = Game.states.START_SCREEN;
       // reset game entities too
-      // need to do that
+      self.resetGame();
+      self.running = true;
     }
   };
 
@@ -273,10 +289,6 @@ function Game(props) {
     } else {
       Game.canvas.style.cursor = "default";
     }
-  };
-
-  self.getScore = function () {
-    return Math.floor(self.gameLevel);
   };
 
   __initObj();

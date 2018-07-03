@@ -51,7 +51,7 @@ function StartScreen(props) {
     // show the option to start game
     Game.ctx.save();
 
-    Game.ctx.fillStyle = "#000";
+    Game.ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
     Game.ctx.fillRect(0, 0, Game.canvas.width, Game.canvas.height);
 
     Game.ctx.fillStyle = "#FFF";

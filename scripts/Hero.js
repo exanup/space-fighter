@@ -71,7 +71,7 @@ function Hero(props) {
 
     // We need to loop from backwards as splicing from inside the loop
     // will change the indexes of the array itself.
-    // Reverse iteration is unaffected by that behaviour.
+    // Reverse iteration is unaffected by that behavior.
     for (var i = self.projectilesCount - 1; i >= 0; i--) {
       // check if projectiles collide with enemies
       var collided = false;

@@ -163,7 +163,7 @@ Hero.width = 100;
 Hero.height = 100;
 Hero.projectilesDelay = 200;
 Hero.$sprite = null;
-Hero.loaded = false;
+Hero.hasSpriteLoaded = false;
 
 Hero.loadSprite = function () {
   Hero.$sprite = new Image();

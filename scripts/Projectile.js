@@ -89,7 +89,7 @@ Projectile.width = 6;
 Projectile.height = 40;
 Projectile.dy = -10;
 Projectile.$sprite = null;
-Projectile.loaded = false;
+Projectile.hasSpriteLoaded = false;
 
 Projectile.loadSprite = function () {
   Projectile.$sprite = new Image();

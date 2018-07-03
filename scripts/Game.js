@@ -36,6 +36,10 @@ function Game(props) {
   };
 
   self.createGameObjects = function () {
+    self.backgroundScroll = new BackgroundScroll({
+      parent: self,
+      Game: Game,
+    });
     self.hero = new Hero({
       parent: self,
       Game: Game,
@@ -97,10 +101,12 @@ function Game(props) {
   self.render = function () {
     switch (self.currentState) {
       case Game.states.START_SCREEN:
+        self.backgroundScroll.draw();
         self.startScreen.draw();
         break;
 
       case Game.states.GAME_SCREEN:
+        self.backgroundScroll.draw();
         self.hero.draw();
         self.enemies.forEach(function (enemy) {
           enemy.draw();
@@ -125,6 +131,7 @@ function Game(props) {
         break;
 
       case Game.states.GAME_SCREEN:
+        self.backgroundScroll.update();
         self.updateGameLevel();
         self.hero.update();
         self.updateEnemies();
@@ -172,9 +179,9 @@ function Game(props) {
     self.gameLevel += self.gameLevelChangeRate;
     self.gameLevelChangeRate += 1 / self.gameLevelSeparator;
     var dy = self.gameLevel / self.gameLevelSeparator;
-    // Enemy.dy = Math.ceil(dy);
-    Enemy.dy =  dy > 1 ? dy : 1 ;
-    // console.log(Enemy.dy);
+    Enemy.dy = dy > 1 ? dy : 1;
+    var backgroundSlowFactor = 0.2;
+    Background.dy = dy > 1 ? backgroundSlowFactor * dy : backgroundSlowFactor;
   };
 
   self.updateEnemies = function () {

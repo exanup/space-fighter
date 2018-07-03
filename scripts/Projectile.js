@@ -1,6 +1,8 @@
 /* jshint browser: true */
 /* jshint -W097 */
 
+"use strict";
+
 function Projectile(props) {
   var self = this;
   var Game = null;
@@ -12,7 +14,7 @@ function Projectile(props) {
   self.hitbox = null;
   self.parent = null;
 
-  self.damage = 200;
+  self.damage = 201;
 
   var __initObj = function () {
     Game = props.Game || (function () {

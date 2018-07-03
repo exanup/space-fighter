@@ -52,6 +52,14 @@ function EndScreen(props) {
       Game.ctx.fillStyle = "rgba(0, 0, 0, 0.75)";
       Game.ctx.fillRect(0, 0, Game.canvas.width, Game.canvas.height);
 
+      Game.ctx.fillStyle = "#111";
+      Game.ctx.fillRect(
+        self.homeBtn.getX() - Game.leftPadding/2,
+        self.homeBtn.getY() - Game.leftPadding/2,
+        self.homeBtn.width + Game.leftPadding,
+        self.homeBtn.height + Game.leftPadding
+      );
+
       Game.ctx.fillStyle = "#FFF";
       Game.ctx.textBaseline = "center";
 

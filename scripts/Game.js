@@ -7,7 +7,7 @@ function Game(props) {
   var self = this;
   self.raf = null;
 
-  self.gameLevelSeparator = 1000;
+  self.gameLevelSeparator = 2000;
 
   var __initObj = function () {
     self.resetGame();

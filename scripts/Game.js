@@ -203,7 +203,7 @@ function Game(props) {
   };
 
   self.checkAndSpawnRandomEnemy = function () {
-    var isReadyToSpawnEnemy = (self.gameLevel - self.gameLevelLastChangedValue >= 200);
+    var isReadyToSpawnEnemy = (self.gameLevel - self.gameLevelLastChangedValue >= 400);
     if (isReadyToSpawnEnemy) {
       // console.group("is ready to spawn!!!");
       self.gameLevelLastChangedValue += 200;
